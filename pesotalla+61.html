@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SILAIS RSJ - Crecimiento Escolar</title>
+    <style>
+        :root { --blue-rsj: #0056b3; --green-rsj: #28a745; --bg: #f4f7f9; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); display: flex; justify-content: center; padding: 20px; }
+        .card { background: white; width: 100%; max-width: 450px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); overflow: hidden; }
+        .header { background: white; padding: 20px; text-align: center; border-bottom: 5px solid var(--blue-rsj); }
+        .logo { max-width: 280px; margin-bottom: 10px; }
+        .content { padding: 25px; }
+        h2 { color: var(--blue-rsj); font-size: 1.2rem; margin-top: 0; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; color: #333; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: var(--blue-rsj); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.3s; }
+        button:hover { background: #004494; }
+        .results { margin-top: 20px; display: none; background: #eef6ff; padding: 15px; border-radius: 10px; border-left: 5px solid var(--green-rsj); }
+        .res-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 1.1rem; }
+        .res-item span { font-weight: bold; color: var(--blue-rsj); }
+        .info { font-size: 0.75rem; color: #666; margin-top: 15px; text-align: center; border-top: 1px solid #eee; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header">
+        <img src="https://i.ibb.co/NMgRf7z/log-RSJ.png" alt="SILAIS RSJ Logo" class="logo">
+        <h2>Control de Crecimiento (5-14 años)</h2>
+    </div>
+    
+    <div class="content">
+        <div class="form-group">
+            <label>Sexo</label>
+            <select id="sexo">
+                <option value="m">Niño</option>
+                <option value="f">Niña</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Edad (61 - 170 meses)</label>
+            <input type="number" id="meses" min="61" max="170" placeholder="Ej: 72">
+        </div>
+        <button onclick="calcularEscolar()">Calcular Percentil 50</button>
+
+        <div id="results" class="results">
+            <div class="res-item">Talla Normal: <span id="tallaTxt">-</span></div>
+            <div class="res-item">Peso Ideal: <span id="pesoTxt">-</span></div>
+            <div class="res-item">IMC Referencia: <span id="imcTxt">-</span></div>
+            <p class="info">Valores aproximados según P50 de la OMS para SILAIS Río San Juan.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function calcularEscolar() {
+    const meses = parseInt(document.getElementById('meses').value);
+    const sexo = document.getElementById('sexo').value;
+
+    if (isNaN(meses) || meses < 61 || meses > 170) {
+        alert("Por favor, ingrese una edad entre 61 y 170 meses.");
+        return;
+    }
+
+    let peso, talla;
+    const años = meses / 12;
+
+    if (sexo === 'm') {
+        // Fórmula aproximada para niños (Escolar)
+        talla = 110 + (meses - 60) * 0.53;
+        peso = 19 + (meses - 60) * 0.32;
+        // Ajuste puberal (12-14 años)
+        if (meses > 144) {
+            peso += (meses - 144) * 0.2;
+        }
+    } else {
+        // Fórmula aproximada para niñas (Escolar)
+        talla = 109 + (meses - 60) * 0.54;
+        peso = 18.5 + (meses - 60) * 0.35;
+        // Las niñas suelen tener un pico de crecimiento más temprano
+        if (meses > 120) {
+            peso += (meses - 120) * 0.15;
+            talla += (meses - 120) * 0.05;
+        }
+    }
+
+    const imc = peso / Math.pow(talla / 100, 2);
+
+    document.getElementById('tallaTxt').innerText = talla.toFixed(1) + " cm";
+    document.getElementById('pesoTxt').innerText = peso.toFixed(1) + " kg";
+    document.getElementById('imcTxt').innerText = imc.toFixed(1);
+    document.getElementById('results').style.display = 'block';
+}
+</script>
+
+<DIV id='floting' style='position:fixed; bottom:10px; right:10px;'>
+<a href="pesotallav3.html">
+<img id="null" src="https://i.ibb.co/vCRGXQqb/0-60m.jpg" width="180px" height="67px" style='opacity: 0.8; border-radius: 0px; box-shadow: 0px 0px 0px 0px #000000;'/></a>
+
+</body>
+</html>
