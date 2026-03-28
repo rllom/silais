@@ -3,90 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Crecimiento Infantil</title>
+    <title>SILAIS Río San Juan - Calculadora Infantil</title>
     <style>
-        body { font-family: sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
-        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h2 { color: #2c3e50; text-align: center; }
-        .input-group { margin-bottom: 1.5rem; }
-        label { display: block; margin-bottom: 0.5rem; color: #34495e; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
-        button:hover { background-color: #2980b9; }
-        #resultado { margin-top: 1.5rem; padding: 15px; border-radius: 6px; display: none; background-color: #e8f4fd; }
+        :root { --blue-silais: #0056b3; --accent: #e91e63; --bg: #f0f2f5; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .app-card { background: white; width: 100%; max-width: 500px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+        
+        /* Encabezado con Logo */
+        .header { background: #fff; padding: 20px; text-align: center; border-bottom: 4px solid var(--blue-silais); }
+        .logo { max-width: 260px; height: auto; margin-bottom: 10px; }
+        h1 { font-size: 1.2rem; color: var(--blue-silais); margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+
+        .content { padding: 25px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #444; font-size: 0.9rem; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 1rem; }
+        
+        button { width: 100%; padding: 15px; background: var(--blue-silais); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #003d7a; transform: translateY(-2px); }
+
+        .results { margin-top: 25px; display: none; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .res-card { background: #f8f9fa; border: 1px solid #eef0f2; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
+        .res-title { font-size: 0.85rem; color: #666; margin-bottom: 5px; }
+        .res-value { font-size: 1.4rem; font-weight: bold; color: var(--blue-silais); }
+        
+        .footer-note { font-size: 0.75rem; color: #888; margin-top: 20px; line-height: 1.4; text-align: center; }
     </style>
 </head>
 <body>
 
-<div class="card">
-<center>
-<img src="https://i.ibb.co/NMgRf7z/log-RSJ.png" width="300px" width="300px" alt="SILAIS RSJ" class="logo"></center>
-    <h2>Crecimiento Infantil</h2>
-    <div class="input-group">
-        <label>Sexo:</label>
-        <select id="sexo">
-            <option value="nino">Niño</option>
-            <option value="nina">Niña</option>
-        </select>
+<div class="app-card">
+    <div class="header">
+        <img  src="https://i.ibb.co/NMgRf7z/log-RSJ.png" alt="SILAIS RSJ" class="logo">
+        <h1>Monitor de Crecimiento <br>(Peso y Talla Ideal)</h1>
     </div>
-    <div class="input-group">
-        <label>Edad (meses):</label>
-        <input type="number" id="edad" placeholder="0-60" min="0" max="60">
-    </div>
-    <button onclick="calcular()">Consultar Rangos</button>
 
-    <div id="resultado">
-        <strong>Resultados (Promedio OMS):</strong>
-        <p id="pesoTxt"></p>
-        <p id="tallaTxt"></p>
-        <small style="color: #7f8c8d;">*Estos valores son referenciales. Consulte siempre a su pediatra.</small>
+    <div class="content">
+        <div class="input-group">
+            <label>Sexo del Paciente</label>
+            <select id="sexo">
+                <option value="m">Masculino (Niño)</option>
+                <option value="f">Femenino (Niña)</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Edad en Meses (0 a 170)</label>
+            <input type="number" id="meses" placeholder="Ej. 60" min="0" max="170">
+        </div>
+
+        <button onclick="calcular()">Calcular Parámetros</button>
+
+        <div id="results" class="results">
+            <div class="res-card">
+                <div class="res-title">Peso Ideal Estimado (P50)</div>
+                <div class="res-value" id="pesoVal">-</div>
+            </div>
+            <div class="res-card">
+                <div class="res-title">Talla Normal Estimada (P50)</div>
+                <div class="res-value" id="tallaVal">-</div>
+            </div>
+            <div class="res-card" style="border-left: 5px solid var(--accent);">
+                <div class="res-title">IMC de Referencia</div>
+                <div class="res-value" id="imcVal" style="color: var(--accent);">-</div>
+            </div>
+            
+            <p class="footer-note">
+                <strong>SILAIS Río San Juan</strong><br>
+                Cálculos basados en estándares de la OMS (0-5 años) y Referencias de Crecimiento (5-14 años). 
+                Esta herramienta es de apoyo y no sustituye el juicio clínico.
+            </p>
+        </div>
     </div>
 </div>
 
 <script>
 function calcular() {
-    const edad = parseInt(document.getElementById('edad').value);
+    const meses = parseFloat(document.getElementById('meses').value);
     const sexo = document.getElementById('sexo').value;
-    const resDiv = document.getElementById('resultado');
-
-    if (isNaN(edad) || edad < 0 || edad > 60) {
-        alert("Por favor, introduce una edad válida entre 0 y 60 meses.");
+    
+    if (isNaN(meses) || meses < 0 || meses > 170) {
+        alert("Por favor ingrese una edad válida entre 0 y 170 meses.");
         return;
     }
 
-    // Lógica simplificada basada en curvas de crecimiento OMS (Percentil 50)
     let peso, talla;
 
-    if (sexo === 'nino') {
-        peso = 3.3 + (0.8 * edad); // Estimación lineal simple para ejemplo
-        talla = 50 + (2 * edad);   // Ajuste aproximado
-        // Refinamiento para mayores de 12 meses
-        if(edad > 12) {
-            peso = (edad * 0.2) + 8; 
-            talla = 75 + (edad - 12) * 0.8;
+    // Lógica extendida hasta 170 meses (14 años aprox)
+    if (sexo === 'm') {
+        // NIÑOS
+        if (meses <= 60) {
+            talla = 49.9 + (2.1 * meses) - (0.015 * Math.pow(meses, 2));
+            peso = 3.3 + (0.55 * meses) + (0.005 * Math.pow(meses, 2));
+        } else {
+            // Crecimiento escolar y puberal temprano
+            talla = 110 + (meses - 60) * 0.52; 
+            peso = 20 + (meses - 60) * 0.35;
         }
     } else {
-        peso = 3.2 + (0.75 * edad);
-        talla = 49 + (1.9 * edad);
-        if(edad > 12) {
-            peso = (edad * 0.18) + 7.5;
-            talla = 74 + (edad - 12) * 0.8;
+        // NIÑAS
+        if (meses <= 60) {
+            talla = 49.1 + (2.0 * meses) - (0.014 * Math.pow(meses, 2));
+            peso = 3.2 + (0.5 * meses) + (0.006 * Math.pow(meses, 2));
+        } else {
+            talla = 108 + (meses - 60) * 0.51;
+            peso = 19 + (meses - 60) * 0.38; // El peso suele subir más rápido en niñas prepúberes
         }
     }
 
-    document.getElementById('pesoTxt').innerText = "Peso Ideal: ~" + peso.toFixed(1) + " kg";
-    document.getElementById('tallaTxt').innerText = "Talla Normal: ~" + talla.toFixed(1) + " cm";
-    resDiv.style.display = 'block';
+    const imc = peso / Math.pow(talla / 100, 2);
+
+    // Actualizar Interfaz
+    document.getElementById('pesoVal').innerText = peso.toFixed(1) + " kg";
+    document.getElementById('tallaVal').innerText = talla.toFixed(1) + " cm";
+    document.getElementById('imcVal').innerText = imc.toFixed(1);
+    document.getElementById('results').style.display = 'block';
 }
 </script>
 
 
 <DIV id='floting' style='position:fixed; bottom:10px; right:10px;'>
 <a href="pesotalla+61.html">
-<img id="null" src="61-170m.jpg" width="180px" height="67px" style='opacity: 0.8; border-radius: 0px; box-shadow: 0px 0px 0px 0px #000000;'/></a>
+<img id="null" src="https://i.ibb.co/Df9F3rbn/61-170m.jpg" width="180px" height="67px" style='opacity: 0.8; border-radius: 0px; box-shadow: 0px 0px 0px 0px #000000;'/></a>
 
 </div>
-
 
 </body>
 </html>
